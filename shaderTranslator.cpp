@@ -35,7 +35,7 @@ std::vector<std::string> ShaderTranslator::tokenize(const std::string &str) {
 	
 	size_t len = str.length();
 	for (size_t i = 0; i < len; i++) {
-		if (std::ispunct(str[i]) != 0 || !isWordcharacter(str[i]))
+		if (ispunct(str[i]) != 0 || !isWordcharacter(str[i]))
 			tokens.push_back(str.substr(i, 1));
 		else {
 			// grab full word and push that as a token.
@@ -57,7 +57,7 @@ std::vector<std::string> ShaderTranslator::tokenize(const std::string &str) {
 
 const std::string ShaderTranslator::translate(std::vector<std::string> &tokens, ShaderType shaderType) {
 	size_t size = tokens.size();
-	for (int i = 0; i < size; i++) {
+	for (size_t i = 0; i < size; i++) {
 		if (tokens[i] == "#") {
 			// check for preprocessor tokens.
 			i += preproccessor(tokens, i);
@@ -85,7 +85,7 @@ const std::string ShaderTranslator::translate(std::vector<std::string> &tokens, 
 
 int ShaderTranslator::preproccessor(std::vector<std::string> &tokens, int currentToken) {
 	const size_t size = tokens.size();
-	for (int i = currentToken + 1; i < size; i++) {
+	for (size_t i = currentToken + 1; i < size; i++) {
 		if (tokens[i] == "version") {
 			// version number token.
 			// check to make sure that the next number is in fact a verison number
@@ -93,7 +93,7 @@ int ShaderTranslator::preproccessor(std::vector<std::string> &tokens, int curren
 				return -1;
 			}
 			// tokens[i+1] is a space
-			if (!std::isspace(tokens[i+1][0])) {
+			if (!isspace(tokens[i+1][0])) {
 				printf("verison needs a space between #version and the number\n");
 				return -1;
 			}

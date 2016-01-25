@@ -39,5 +39,9 @@ int main(int argc, const char * argv[]) {
 	auto tokens = ShaderTranslator::tokenize(glsl);
 	const auto &translatedSource = ShaderTranslator::translate(tokens, ShaderTranslator::ShaderType::VERTEX);
 	printf("%s\n", translatedSource.c_str());
+
+#ifdef _WIN32
+	system("PAUSE");
+#endif
 	return 0;
 }

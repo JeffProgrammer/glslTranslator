@@ -101,7 +101,7 @@ protected:
 	 * @return true if 'x' is a word character and is not a space, false otherwise.
 	 */
 	static inline bool isWordcharacter(char x) {
-		return !std::isspace(x) && std::iswalnum(x);
+		return !isspace(x) && iswalnum(x);
 	}
 };
 
