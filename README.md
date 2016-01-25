@@ -5,7 +5,11 @@ The inspiration for writing this is that in my own proprietary game and game eng
 
 ## Build
 
-Tested on Xcode 7.0.1 using Apple LLVM 7.0 C++ compiler.
+Run Cmake and build. A tester program is provided for the library.
+
+Tested on the following tools:
+- Xcode 7.0.1 using Apple LLVM 7.0 C++ compiler (x86_64)
+- MSVC 2015 32-bit VS140
 
 ## License
 
