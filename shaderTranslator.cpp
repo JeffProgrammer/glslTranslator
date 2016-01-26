@@ -72,6 +72,11 @@ const std::string ShaderTranslator::translate(std::vector<std::string> &tokens, 
 				tokens[i] = "out";
 			else if (shaderType == ShaderType::FRAGMENT)
 				tokens[i] = "in";
+		} else if (isFunctionCallAtPos("texture", tokens, i)) {
+			// texture2D, textureCube, texture2DLod, ect is handled here. Basically
+			// this case handles texture functions
+			// In GLSL core profile, texture() is overloaded.
+			tokens[i] = "texture";
 		}
 	}
 	
