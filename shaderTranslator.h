@@ -103,6 +103,20 @@ protected:
 	static inline bool isWordcharacter(char x) {
 		return !isspace(x) && iswalnum(x);
 	}
+
+	/**
+	 * Determines if the token at 'currentId' is calling the fuction or function
+	 * pattern.
+	 * @param fn The function or pattern we are checking at the token currentId.
+	 * @param tokens The vector containing the token list.
+	 * @param currentId The current token we are checking.
+	 * @return true if we are calling a function of pattern 'fn', false otherwise.
+	 * @note A function call grammar we are checking is defined as the following:
+	 *       'fn_pattern' '('
+	 */
+	static inline bool isFunctionCallAtPos(const std::string &fn, const std::vector<std::string> &tokens, size_t currentId) {
+		return (tokens[currentId].find(fn) != std::string::npos) && ((currentId + 1) < tokens.size()) && (tokens[currentId + 1] == "(");
+	}
 };
 
 #endif /* shaderTranslator_h */
