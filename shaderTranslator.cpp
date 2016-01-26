@@ -34,7 +34,8 @@ std::vector<std::string> ShaderTranslator::tokenize(const std::string &str) {
 	std::vector<std::string> tokens;
 	
 	size_t len = str.length();
-	for (size_t i = 0; i < len; i++) {
+	size_t i = 0;
+	while (i < len) {
 		if (ispunct(str[i]) != 0 || !isWordcharacter(str[i]))
 			tokens.push_back(str.substr(i, 1));
 		else {
@@ -47,9 +48,14 @@ std::vector<std::string> ShaderTranslator::tokenize(const std::string &str) {
 			std::string tmp = str.substr(start, l);
 			tokens.push_back(tmp);
 			
-			if (l > 0)
-				i += l - 1;
+			// Only add if we are greater than 0. If we are zero, we will just
+			// grab the increment below.
+			if (l > 0) {
+				i += l;
+				continue;
+			}
 		}
+		i++;
 	}
 
 	return tokens;
