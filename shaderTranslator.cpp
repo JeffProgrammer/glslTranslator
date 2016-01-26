@@ -64,13 +64,34 @@ std::vector<std::string> ShaderTranslator::tokenize(const std::string &str) {
 const std::string ShaderTranslator::translate(std::vector<std::string> &tokens, ShaderType shaderType) {
 	size_t size = tokens.size();
 	for (size_t i = 0; i < size; i++) {
+		if (shaderType == VERTEX) {
+			if (tokens[i] == "attribute") {
+				// check for the attribute keyword. in GLSL core profile, it is changed
+				// to the in keyword.
+				tokens[i] = "in";
+				continue;
+			}
+		} else if (shaderType == FRAGMENT) {
+			if (tokens[i] == "void" && tokens[i + 2] == "main") {
+				// We need to add a token here for output color.
+				// TODO: MRT if we need it with gl_FragData[]
+				tokens[i] = "out vec4 GEN_OUTPUT_FINAL_COLOR;\n\nvoid";
+				continue;
+			} else if (tokens[i].find("gl_") != std::string::npos) {
+				// Handle built in variables for GLSL here in fragment shaders.
+
+				// Handle output of color.
+				if (tokens[i] == "gl_FragColor") {
+					tokens[i] = "GEN_OUTPUT_FINAL_COLOR";
+				}
+
+				continue;
+			}
+		}
+
 		if (tokens[i] == "#") {
 			// check for preprocessor tokens.
 			i += preproccessor(tokens, i);
-		} else if (tokens[i] == "attribute") {
-			// check for the attribute keyword. in GLSL core profile, it is changed
-			// to the in keyword.
-			tokens[i] = "in";
 		} else if (tokens[i] == "varying") {
 			// In vertex shaders, varying turns to out.
 			// in fragment shaders, varying turns to in.
