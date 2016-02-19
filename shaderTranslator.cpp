@@ -30,6 +30,8 @@
 
 #include "shaderTranslator.h"
 
+#define FRAG_OUTPUT "GEN_OUTPUT_FINAL_COLOR"
+
 ShaderTranslator::ShaderTranslator() {
 
 }
@@ -78,14 +80,14 @@ const std::string ShaderTranslator::translate(const std::string &str, ShaderType
 			if (mTokens[i] == "void" && mTokens[i + 2] == "main") {
 				// We need to add a token here for output color.
 				// TODO: MRT if we need it with gl_FragData[]
-				mTokens[i] = "out vec4 GEN_OUTPUT_FINAL_COLOR;\n\nvoid";
+				mTokens[i] = std::string("out vec4 ") + FRAG_OUTPUT + ";\n\nvoid";
 				continue;
 			} else if (mTokens[i].find("gl_") != std::string::npos) {
 				// Handle built in variables for GLSL here in fragment shaders.
 
 				// Handle output of color.
 				if (mTokens[i] == "gl_FragColor") {
-					mTokens[i] = "GEN_OUTPUT_FINAL_COLOR";
+					mTokens[i] = FRAG_OUTPUT;
 				}
 
 				continue;
