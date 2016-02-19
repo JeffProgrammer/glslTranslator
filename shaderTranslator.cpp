@@ -30,14 +30,16 @@
 
 #include "shaderTranslator.h"
 
-std::vector<std::string> ShaderTranslator::tokenize(const std::string &str) {
-	std::vector<std::string> tokens;
-	
+ShaderTranslator::ShaderTranslator() {
+
+}
+
+void ShaderTranslator::tokenize(const std::string &str) {
 	size_t len = str.length();
 	size_t i = 0;
 	while (i < len) {
 		if (ispunct(str[i]) != 0 || !isWordcharacter(str[i]))
-			tokens.push_back(str.substr(i, 1));
+			mTokens.push_back(str.substr(i, 1));
 		else {
 			// grab full word and push that as a token.
 			size_t l = 0;
@@ -46,7 +48,7 @@ std::vector<std::string> ShaderTranslator::tokenize(const std::string &str) {
 				l++;
 			
 			std::string tmp = str.substr(start, l);
-			tokens.push_back(tmp);
+			mTokens.push_back(tmp);
 			
 			// Only add if we are greater than 0. If we are zero, we will just
 			// grab the increment below.
@@ -57,79 +59,80 @@ std::vector<std::string> ShaderTranslator::tokenize(const std::string &str) {
 		}
 		i++;
 	}
-
-	return tokens;
 }
 
-const std::string ShaderTranslator::translate(std::vector<std::string> &tokens, ShaderType shaderType) {
-	size_t size = tokens.size();
+const std::string ShaderTranslator::translate(const std::string &str, ShaderType shaderType) {
+	// first tokenize
+	tokenize(str);
+
+	size_t size = mTokens.size();
 	for (size_t i = 0; i < size; i++) {
 		if (shaderType == VERTEX) {
-			if (tokens[i] == "attribute") {
+			if (mTokens[i] == "attribute") {
 				// check for the attribute keyword. in GLSL core profile, it is changed
 				// to the in keyword.
-				tokens[i] = "in";
+				mTokens[i] = "in";
 				continue;
 			}
 		} else if (shaderType == FRAGMENT) {
-			if (tokens[i] == "void" && tokens[i + 2] == "main") {
+			if (mTokens[i] == "void" && mTokens[i + 2] == "main") {
 				// We need to add a token here for output color.
 				// TODO: MRT if we need it with gl_FragData[]
-				tokens[i] = "out vec4 GEN_OUTPUT_FINAL_COLOR;\n\nvoid";
+				mTokens[i] = "out vec4 GEN_OUTPUT_FINAL_COLOR;\n\nvoid";
 				continue;
-			} else if (tokens[i].find("gl_") != std::string::npos) {
+			} else if (mTokens[i].find("gl_") != std::string::npos) {
 				// Handle built in variables for GLSL here in fragment shaders.
 
 				// Handle output of color.
-				if (tokens[i] == "gl_FragColor") {
-					tokens[i] = "GEN_OUTPUT_FINAL_COLOR";
+				if (mTokens[i] == "gl_FragColor") {
+					mTokens[i] = "GEN_OUTPUT_FINAL_COLOR";
 				}
 
 				continue;
 			}
 		}
 
-		if (tokens[i] == "#") {
+		if (mTokens[i] == "#") {
 			// check for preprocessor tokens.
-			i += preproccessor(tokens, i);
-		} else if (tokens[i] == "varying") {
+			i += preproccessor(i);
+		} else if (mTokens[i] == "varying") {
 			// In vertex shaders, varying turns to out.
 			// in fragment shaders, varying turns to in.
 			if (shaderType == ShaderType::VERTEX)
-				tokens[i] = "out";
+				mTokens[i] = "out";
 			else if (shaderType == ShaderType::FRAGMENT)
-				tokens[i] = "in";
-		} else if (isFunctionCallAtPos("texture", tokens, i)) {
+				mTokens[i] = "in";
+		} else if (isFunctionCallAtPos("texture", i)) {
 			// texture2D, textureCube, texture2DLod, ect is handled here. Basically
 			// this case handles texture functions
 			// In GLSL core profile, texture() is overloaded.
-			tokens[i] = "texture";
+			mTokens[i] = "texture";
 		}
 	}
 	
 	// create the shader and return it.
 	std::string shader = "";
-	for (const auto &tok : tokens) {
+	for (const auto &tok : mTokens) {
 		shader += tok.c_str();
 	}
 	return shader;
 }
 
-int ShaderTranslator::preproccessor(std::vector<std::string> &tokens, int currentToken) {
-	const size_t size = tokens.size();
+int ShaderTranslator::preproccessor(int currentToken) {
+	const size_t size = mTokens.size();
 	for (size_t i = currentToken + 1; i < size; i++) {
-		if (tokens[i] == "version") {
+		if (mTokens[i] == "version") {
 			// version number token.
 			// check to make sure that the next number is in fact a verison number
 			if (i+2 >= size) {
 				return -1;
 			}
 			// tokens[i+1] is a space
-			if (!isspace(tokens[i+1][0])) {
+			if (!isspace(mTokens[i+1][0])) {
 				printf("verison needs a space between #version and the number\n");
 				return -1;
 			}
-			tokens[i + 2] = "330 core";
+			mTokens[i + 2] = "330 core";
 			currentToken += 2;
 			break;
 		}

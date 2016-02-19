@@ -36,15 +36,15 @@ int main(int argc, const char * argv[]) {
 	std::string vertex = "#version 120\nattribute vec3 pos;\nvarying vec3 col;\nvarying vec2 uv;\nuniform vec4 mvp;\nvoid main() {\n   gl_Position = vec4(pos, 1) * mvp;\n   col = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n   uv = vec2(0, 0);\n}\n";
 	
 	// test vertex shader translation from GLSL 120 to GLSL 330 core profile
-	auto tokens = ShaderTranslator::tokenize(vertex);
-	const auto &translatedSource = ShaderTranslator::translate(tokens, ShaderTranslator::ShaderType::VERTEX);
+	ShaderTranslator vertexTranslator;
+	const auto &translatedSource =vertexTranslator.translate(vertex, ShaderTranslator::ShaderType::VERTEX);
 	printf("%s\n", translatedSource.c_str());
 
 	std::string frag = "#version 120\nvarying vec4 col;\nvarying vec2 uv;\nuniform sampler2D diffuseTexture;\nvoid main() {\n   gl_FragColor = texture2D(diffuseTexture.st, uv) * color;\n}\n";
 
 	// test vertex shader translation from GLSL 120 to GLSL 330 core profile
-	tokens = ShaderTranslator::tokenize(frag);
-	const auto &translatedFragSource = ShaderTranslator::translate(tokens, ShaderTranslator::ShaderType::FRAGMENT);
+	ShaderTranslator fragmentTranslator;
+	const auto &translatedFragSource = fragmentTranslator.translate(frag, ShaderTranslator::ShaderType::FRAGMENT);
 	printf("%s\n", translatedFragSource.c_str());
 
 #ifdef _WIN32

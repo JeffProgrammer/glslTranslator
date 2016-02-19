@@ -35,6 +35,8 @@
 #include <string>
 #include <vector>
 
+typedef std::vector<std::string> ShaderTokenList;
+
 /**
  * A static class that translates OpenGL GLSL 120 shaders to GLSL 330 shaders.
  * Example usage of the library:
@@ -45,17 +47,19 @@
  * printf("%s\n", fragment.c_str());
  *
  * // Tokenize and translate the Vertex Shader.
- * auto tokens = ShaderTranslator::tokenize(vertex);
- * const auto &shader = ShaderTranslator::translate(tokens, ShaderTranslator::VERTEX);
+ * auto vertexTranslator = new ShaderTranslator();
+ * const auto &shader = vertexTranslator.translate(vertex, ShaderTranslator::VERTEX);
  * printf("%s\n", shader.c_str());
  *
  * // Now tokenize and translate the Fragment Shader.
- * tokens = ShaderTranslator::tokenize(fragment);
- * shader = ShaderTranslator::translate(tokens, ShaderTranslator::FRAGMENT);
+ * auto fragmentTranslator = new ShaderTranslator();
+ * shader = fragmentTranslator.translate(fragment, ShaderTranslator::FRAGMENT);
  * printf("%s\n", shader.c_str());
  */
 class ShaderTranslator {
 public:
+	ShaderTranslator();
+
 	/**
 	 * Enum that handles different types of shader streams.
 	 * Vertex shaders are shader files that process every geometric vertex.
@@ -65,24 +69,25 @@ public:
 		VERTEX,
 		FRAGMENT
 	};
-
-	/**
-	 * Tokenizes a stream of shader source.
-	 * @param str The stream of shader source to be tokenized.
-	 * @return the tokenized list of the shader.
-	 */
-	static std::vector<std::string> tokenize(const std::string &str);
 	
 	/**
 	 * Translates the shader in it's tokenized list form from GLSL 120 to GLSL
 	 * 330. It will print out the old shader and the new shader once the tokenization
 	 * process is completed.
-	 * @param tokens A vector of shader tokens that are going to be parsed.
+	 * @param str The stream of shader source to be tokenized and translated..
 	 * @param shaderType The type of shader stream that is being parsed, such as a
 	 *  vertex shader or a fragment (pixel) shader.
 	 * @return the translated shader source, back in a string form.
 	 */
-	static const std::string translate(std::vector<std::string> &tokens, ShaderType shaderType);
+	const std::string translate(const std::string &str, ShaderType shaderType);
+
+	/**
+	 * Get's the list of tokens from the tokenizer's job.
+	 * @return the list of tokens.
+	 */
+	const ShaderTokenList getTokens() const {
+		return mTokens;
+	}
 	
 protected:
 	/**
@@ -93,8 +98,13 @@ protected:
 	 * @return the position on where to continue processing the shader stream
 	 *  after the preprocessing line is done, or -1 if an error occurred.
 	 */
-	static int preproccessor(std::vector<std::string> &tokens, int currentToken);
-	
+	int preproccessor(int currentToken);
+
+	/**
+	 * Tokenizes a stream of shader source.
+	 */
+	void tokenize(const std::string &str);
+
 	/**
 	 * Determines if character 'x' is a word character and is not a space.
 	 * @param x The character to check if it is a word character.
@@ -114,9 +124,14 @@ protected:
 	 * @note A function call grammar we are checking is defined as the following:
 	 *       'fn_pattern' '('
 	 */
-	static inline bool isFunctionCallAtPos(const std::string &fn, const std::vector<std::string> &tokens, size_t currentId) {
-		return (tokens[currentId].find(fn) != std::string::npos) && ((currentId + 1) < tokens.size()) && (tokens[currentId + 1] == "(");
+	inline bool isFunctionCallAtPos(const std::string &fn, size_t currentId) {
+		return (mTokens[currentId].find(fn) != std::string::npos) && ((currentId + 1) < mTokens.size()) && (mTokens[currentId + 1] == "(");
 	}
+
+	/**
+	 * A vector of tokens represented as strings.
+	 */
+	ShaderTokenList mTokens;
 };
 
 #endif /* shaderTranslator_h */
