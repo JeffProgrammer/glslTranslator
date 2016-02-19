@@ -33,7 +33,7 @@
 #include "shaderTranslator.h"
 
 int main(int argc, const char * argv[]) {
-	std::string vertex = "#version 120\nattribute vec3 pos;\nvarying vec3 col;\nvarying vec2 uv;\nuniform vec4 mvp;\nvoid main() {\n   gl_Position = vec4(pos, 1) * mvp;\n   col = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n   uv = vec2(0, 0);\n}\n";
+	std::string vertex = "#version 120\n\n// blah blah blah\n\nattribute vec3 pos;\nvarying vec3 col;\nvarying vec2 uv;\nuniform vec4 mvp;\nvoid main() {\n   gl_Position = vec4(pos, 1) * mvp;\n   col = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n   uv = vec2(0, 0);\n}\n";
 	
 	// test vertex shader translation from GLSL 120 to GLSL 330 core profile
 	ShaderTranslator vertexTranslator;
