@@ -47,12 +47,12 @@ typedef std::vector<std::string> ShaderTokenList;
  * printf("%s\n", fragment.c_str());
  *
  * // Tokenize and translate the Vertex Shader.
- * auto vertexTranslator = new ShaderTranslator();
+ * ShaderTranslator vertexTranslator;
  * const auto &shader = vertexTranslator.translate(vertex, ShaderTranslator::VERTEX);
  * printf("%s\n", shader.c_str());
  *
  * // Now tokenize and translate the Fragment Shader.
- * auto fragmentTranslator = new ShaderTranslator();
+ * ShaderTranslator fragmentTranslator;
  * shader = fragmentTranslator.translate(fragment, ShaderTranslator::FRAGMENT);
  * printf("%s\n", shader.c_str());
  */
