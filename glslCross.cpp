@@ -36,7 +36,7 @@
 
 int main(int argc, const char * argv[]) {
 	const std::string vertex = "// blah blah blah\n\nattribute vec3 pos;\nvarying vec3 col;\nvarying vec2 uv;\nuniform vec4 mvp;\nvoid main() {\n   gl_Position = vec4(pos, 1) * mvp;\n   col = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n   uv = vec2(0, 0);\n}\n";
-	const std::string frag = "varying vec4 col;\nvarying vec2 uv;\nuniform sampler2D diffuseTexture;\nvoid main() {\n   gl_FragColor = texture2D(diffuseTexture.st, uv) * color;\n}\n";
+	const std::string frag = "varying vec4 col;\nvarying vec2 uv;\nuniform sampler2D diffuseTexture;\nvoid main() {\n   gl_FragColor = texture2D(diffuseTexture, uv) * color;\n}\n";
 	
 	{
 		// test vertex shader translation from base shader to GLSL 120
