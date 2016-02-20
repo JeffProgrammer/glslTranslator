@@ -39,38 +39,26 @@ const std::string ShaderTranslatorGL33::translate(const std::string &str, Shader
 	// first tokenize
 	tokenize(str);
 
+	std::string shader = "";
+	if (shaderType == ShaderType::VERTEX)
+		shader = translateVertexShader(str);
+	else if (shaderType == ShaderType::FRAGMENT)
+		shader = translateFragmentShader(str);
+	return shader;
+}
+
+const std::string ShaderTranslatorGL33::translateVertexShader(const std::string &str) {
 	size_t size = mTokens.size();
 	for (size_t i = 0; i < size; i++) {
-		if (shaderType == VERTEX) {
-			if (mTokens[i] == "attribute") {
-				// check for the attribute keyword. in GLSL core profile, it is changed
-				// to the in keyword.
-				mTokens[i] = "in";
-				continue;
-			}
-		}
-		else if (shaderType == FRAGMENT) {
-			if (mTokens[i].find("gl_") != std::string::npos) {
-				// Handle built in variables for GLSL here in fragment shaders.
-
-				// Handle output of color.
-				if (mTokens[i] == "gl_FragColor") {
-					mTokens[i] = FRAG_OUTPUT;
-				}
-
-				continue;
-			}
-		}
-
-		if (mTokens[i] == "varying") {
+		if (mTokens[i] == "attribute") {
+			// check for the attribute keyword. in GLSL core profile, it is changed
+			// to the in keyword.
+			mTokens[i] = "in";
+		} else if (mTokens[i] == "varying") {
 			// In vertex shaders, varying turns to out.
 			// in fragment shaders, varying turns to in.
-			if (shaderType == ShaderType::VERTEX)
-				mTokens[i] = "out";
-			else if (shaderType == ShaderType::FRAGMENT)
-				mTokens[i] = "in";
-		}
-		else if (isFunctionCallAtPos("texture", i)) {
+			mTokens[i] = "out";
+		} else if (isFunctionCallAtPos("texture", i)) {
 			// texture2D, textureCube, texture2DLod, ect is handled here. Basically
 			// this case handles texture functions
 			// In GLSL core profile, texture() is overloaded.
@@ -80,12 +68,38 @@ const std::string ShaderTranslatorGL33::translate(const std::string &str, Shader
 
 	// create the shader and return it.
 	// first add our shader header.
-	std::string shader;
-	if (shaderType == ShaderType::VERTEX)
-		shader = SHADER_GL33_VERTEX_HEADER;
-	else if (shaderType == ShaderType::FRAGMENT)
-		shader = SHADER_GL33_FRAGMENT_HEADER;
+	std::string shader = SHADER_GL33_VERTEX_HEADER;
+	for (const auto &tok : mTokens) {
+		shader += tok.c_str();
+	}
+	return shader;
+}
 
+const std::string ShaderTranslatorGL33::translateFragmentShader(const std::string &str) {
+	size_t size = mTokens.size();
+	for (size_t i = 0; i < size; i++) {
+		if (mTokens[i].find("gl_") != std::string::npos) {
+			// Handle built in variables for GLSL here in fragment shaders.
+
+			// Handle output of color.
+			if (mTokens[i] == "gl_FragColor") {
+				mTokens[i] = FRAG_OUTPUT;
+			}
+		} else if (mTokens[i] == "varying") {
+			// In vertex shaders, varying turns to out.
+			// in fragment shaders, varying turns to in.
+			mTokens[i] = "in";
+		} else if (isFunctionCallAtPos("texture", i)) {
+			// texture2D, textureCube, texture2DLod, ect is handled here. Basically
+			// this case handles texture functions
+			// In GLSL core profile, texture() is overloaded.
+			mTokens[i] = "texture";
+		}
+	}
+
+	// create the shader and return it.
+	// first add our shader header.
+	std::string shader = SHADER_GL33_FRAGMENT_HEADER;
 	for (const auto &tok : mTokens) {
 		shader += tok.c_str();
 	}

@@ -47,6 +47,11 @@ public:
 	 * @return the translated shader source, back in a string form.
 	 */
 	virtual const std::string translate(const std::string &str, ShaderType shaderType) override;
+
+protected:
+	const std::string translateVertexShader(const std::string &str);
+
+	const std::string translateFragmentShader(const std::string &str);
 };
 
 #endif /* shaderTranslatorGL33_h */
