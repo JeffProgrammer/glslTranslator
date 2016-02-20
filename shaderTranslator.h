@@ -38,22 +38,23 @@
 typedef std::vector<std::string> ShaderTokenList;
 
 /**
- * A static class that translates OpenGL GLSL 120 shaders to GLSL 330 shaders.
+ * A static class that translates OpenGL GLSL 120 shaders other high level
+ * shading languages. Currently only GLSL 120 and GLSL 330 are supported.
  * Example usage of the library:
  *
- * std::string vertex   = "#version 120\nvoid main() {\n gl_Position = vec4(1);\n}";
- * std::string fragment = "#version 120\nvoid main() {\n gl_FragColor = vec4(1, 0, 0, 1);\n}";
+ * std::string vertex   = "void main() {\n gl_Position = vec4(1);\n}";
+ * std::string fragment = "void main() {\n gl_FragColor = vec4(1, 0, 0, 1);\n}";
  * printf("%s\n", vertex.c_str());
  * printf("%s\n", fragment.c_str());
  *
  * // Tokenize and translate the Vertex Shader.
- * ShaderTranslator vertexTranslator;
- * const auto &shader = vertexTranslator.translate(vertex, ShaderTranslator::VERTEX);
+ * auto vertexTranslator = new ShaderTranslatorGL33();
+ * const auto &shader = vertexTranslator->translate(vertex, ShaderTranslator::VERTEX);
  * printf("%s\n", shader.c_str());
  *
  * // Now tokenize and translate the Fragment Shader.
- * ShaderTranslator fragmentTranslator;
- * shader = fragmentTranslator.translate(fragment, ShaderTranslator::FRAGMENT);
+ * auto = fragmentTranslator = new ShaderTranslatorGL33();
+ * shader = fragmentTranslator->translate(fragment, ShaderTranslator::FRAGMENT);
  * printf("%s\n", shader.c_str());
  */
 class ShaderTranslator {
