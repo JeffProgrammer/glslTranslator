@@ -38,7 +38,7 @@
 typedef std::vector<std::string> ShaderTokenList;
 
 /**
- * A static class that translates OpenGL GLSL 120 shaders other high level
+ * A class that translates OpenGL GLSL 120 shaders other high level
  * shading languages. Currently only GLSL 120 and GLSL 330 are supported.
  * Example usage of the library:
  *
