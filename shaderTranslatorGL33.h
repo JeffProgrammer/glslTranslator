@@ -41,7 +41,7 @@ public:
 	 * Translates the shader in it's tokenized list form from GLSL 120 to GLSL
 	 * 330. It will print out the old shader and the new shader once the tokenization
 	 * process is completed.
-	 * @param str The stream of shader source to be tokenized and translated..
+	 * @param str The stream of shader source to be tokenized and translated.
 	 * @param shaderType The type of shader stream that is being parsed, such as a
 	 *  vertex shader or a fragment (pixel) shader.
 	 * @return the translated shader source, back in a string form.
@@ -49,8 +49,18 @@ public:
 	virtual const std::string translate(const std::string &str, ShaderType shaderType) override;
 
 protected:
+	/**
+	 * Translates a vertex shader and turns it back into a proper shader.
+	 * @param str The stream of shader source to be tokenized and translated.
+	 * @return the translated shader source, back in a string form.
+	 */
 	const std::string translateVertexShader(const std::string &str);
 
+	/**
+	 * Translates a fragment shader and turns it back into a proper shader.
+	 * @param str The stream of shader source to be tokenized and translated.
+	 * @return the translated shader source, back in a string form.
+	 */
 	const std::string translateFragmentShader(const std::string &str);
 };
 
