@@ -31,21 +31,42 @@
 #include <iostream>
 #include <string>
 #include "shaderTranslator.h"
+#include "shaderTranslatorGL21.h"
+#include "shaderTranslatorGL33.h"
 
 int main(int argc, const char * argv[]) {
-	std::string vertex = "#version 120\n\n// blah blah blah\n\nattribute vec3 pos;\nvarying vec3 col;\nvarying vec2 uv;\nuniform vec4 mvp;\nvoid main() {\n   gl_Position = vec4(pos, 1) * mvp;\n   col = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n   uv = vec2(0, 0);\n}\n";
+	const std::string vertex = "// blah blah blah\n\nattribute vec3 pos;\nvarying vec3 col;\nvarying vec2 uv;\nuniform vec4 mvp;\nvoid main() {\n   gl_Position = vec4(pos, 1) * mvp;\n   col = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n   uv = vec2(0, 0);\n}\n";
+	const std::string frag = "varying vec4 col;\nvarying vec2 uv;\nuniform sampler2D diffuseTexture;\nvoid main() {\n   gl_FragColor = texture2D(diffuseTexture.st, uv) * color;\n}\n";
 	
-	// test vertex shader translation from GLSL 120 to GLSL 330 core profile
-	ShaderTranslator vertexTranslator;
-	const auto &translatedSource =vertexTranslator.translate(vertex, ShaderTranslator::ShaderType::VERTEX);
-	printf("%s\n", translatedSource.c_str());
+	{
+		// test vertex shader translation from base shader to GLSL 120
+		auto vertexTranslator = new ShaderTranslatorGL21();
+		const auto &translatedSource = vertexTranslator->translate(vertex, ShaderTranslator::ShaderType::VERTEX);
+		printf("%s\n", translatedSource.c_str());
+		delete vertexTranslator;
 
-	std::string frag = "#version 120\nvarying vec4 col;\nvarying vec2 uv;\nuniform sampler2D diffuseTexture;\nvoid main() {\n   gl_FragColor = texture2D(diffuseTexture.st, uv) * color;\n}\n";
+		// test vertex shader translation from base shader to GLSL 120
+		auto fragmentTranslator = new ShaderTranslatorGL21();;
+		const auto &translatedFragSource = fragmentTranslator->translate(frag, ShaderTranslator::ShaderType::FRAGMENT);
+		printf("%s\n", translatedFragSource.c_str());
+		delete fragmentTranslator;
+	}
 
-	// test vertex shader translation from GLSL 120 to GLSL 330 core profile
-	ShaderTranslator fragmentTranslator;
-	const auto &translatedFragSource = fragmentTranslator.translate(frag, ShaderTranslator::ShaderType::FRAGMENT);
-	printf("%s\n", translatedFragSource.c_str());
+	printf("\nAnd Now we test OpenGL 3.3 core profile!\n\n");
+
+	{
+		// test vertex shader translation from base shader to GLSL 330 core profile
+		auto vertexTranslator = new ShaderTranslatorGL33();
+		const auto &translatedSource = vertexTranslator->translate(vertex, ShaderTranslator::ShaderType::VERTEX);
+		printf("%s\n", translatedSource.c_str());
+		delete vertexTranslator;
+
+		// test vertex shader translation from base shader to GLSL 330 core profile
+		auto fragmentTranslator = new ShaderTranslatorGL33();;
+		const auto &translatedFragSource = fragmentTranslator->translate(frag, ShaderTranslator::ShaderType::FRAGMENT);
+		printf("%s\n", translatedFragSource.c_str());
+		delete fragmentTranslator;
+	}
 
 #ifdef _WIN32
 	system("PAUSE");

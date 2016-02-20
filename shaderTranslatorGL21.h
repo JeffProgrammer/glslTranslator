@@ -28,31 +28,23 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //------------------------------------------------------------------------------
 
+#ifndef shaderTranslatorGL21_h
+#define shaderTranslatorGL21_h
+
 #include "shaderTranslator.h"
 
-void ShaderTranslator::tokenize(const std::string &str) {
-	size_t len = str.length();
-	size_t i = 0;
-	while (i < len) {
-		if (ispunct(str[i]) != 0 || !isWordcharacter(str[i]))
-			mTokens.push_back(str.substr(i, 1));
-		else {
-			// grab full word and push that as a token.
-			size_t l = 0;
-			size_t start = i;
-			while ((start + l) < len && isWordcharacter(str[start + l]))
-				l++;
-			
-			std::string tmp = str.substr(start, l);
-			mTokens.push_back(tmp);
-			
-			// Only add if we are greater than 0. If we are zero, we will just
-			// grab the increment below.
-			if (l > 0) {
-				i += l;
-				continue;
-			}
-		}
-		i++;
-	}
-}
+class ShaderTranslatorGL21 : public ShaderTranslator {
+public:
+	ShaderTranslatorGL21() {}
+
+	/**
+	 * Translates the shader in it's tokenized list form from the base to GLSL 120.
+	 * @param str The stream of shader source to be tokenized and translated..
+	 * @param shaderType The type of shader stream that is being parsed, such as a
+	 *  vertex shader or a fragment (pixel) shader.
+	 * @return the translated shader source, back in a string form.
+	 */
+	virtual const std::string translate(const std::string &str, ShaderType shaderType) override;
+};
+
+#endif /* shaderTranslatorGL21_h */

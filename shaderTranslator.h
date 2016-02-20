@@ -58,7 +58,6 @@ typedef std::vector<std::string> ShaderTokenList;
  */
 class ShaderTranslator {
 public:
-	ShaderTranslator();
 
 	/**
 	 * Enum that handles different types of shader streams.
@@ -79,7 +78,7 @@ public:
 	 *  vertex shader or a fragment (pixel) shader.
 	 * @return the translated shader source, back in a string form.
 	 */
-	const std::string translate(const std::string &str, ShaderType shaderType);
+	virtual const std::string translate(const std::string &str, ShaderType shaderType) = 0;
 
 	/**
 	 * Get's the list of tokens from the tokenizer's job.
@@ -90,16 +89,6 @@ public:
 	}
 	
 protected:
-	/**
-	 * Handles the preprocessor tokens of the shader stream.
-	 * Anything that has a # symbol is a preprocessor.
-	 * @param tokens The shader stream, split up into a tokenized list.
-	 * @param currentToken The current position of where we are in the token list.
-	 * @return the position on where to continue processing the shader stream
-	 *  after the preprocessing line is done, or -1 if an error occurred.
-	 */
-	int preproccessor(int currentToken);
-
 	/**
 	 * Tokenizes a stream of shader source.
 	 */

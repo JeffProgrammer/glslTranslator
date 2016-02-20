@@ -4,6 +4,10 @@ project(GLSLTranslatorSln)
 set (GLSLTRANSLATOR_SRC
 	shaderTranslator.cpp
 	shaderTranslator.h
+	shaderTranslatorGL21.cpp
+	shaderTranslatorGL21.h
+	shaderTranslatorGL33.cpp
+	shaderTranslatorGL33.h
 )
 add_library(GLSLTranslator ${GLSLTRANSLATOR_SRC})
 
