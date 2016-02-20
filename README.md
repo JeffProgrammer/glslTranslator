@@ -5,13 +5,21 @@ The inspiration for writing this is that I wish to support Mac OSX 10.6.8 still 
 
 ## What's supported in the procedural translation?
 
-* #version 120 -> #version 330 core
+* version numbers automatically added as the first line of the shader code
+* language specific define macros to add custom shader code in for a specific language.
 * attribute -> in (vertex shader)
 * varying -> out (vertex shader)
 * varying -> in (fragment shader)
 * texture2D -> texture
 * texture3D -> texture
 * gl_FragColor -> Generated output variable
+
+## Language Specific Code
+
+If you want to add language specific code to a specific language, this is supported. Just wrap your code in the following defines for backends:
+
+* GLSL 120 - #ifdef GL21
+* GLSL 330 - #ifdef GL33
 
 ## Build
 
