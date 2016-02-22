@@ -26,7 +26,7 @@ If you want to add language specific code to a specific language, this is suppor
 Run Cmake and build. A tester program is provided for the library.
 
 Tested on the following tools:
-- Xcode 7.0.1 using Apple LLVM 7.0 C++ compiler (x86_64)
+- Xcode 7.0.1 using Apple LLVM 7.0 C++ compiler (i386 and x86_64)
 - MSVC 2015 32-bit VS140
 
 ## License
