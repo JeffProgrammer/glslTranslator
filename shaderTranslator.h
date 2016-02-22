@@ -59,6 +59,7 @@ typedef std::vector<std::string> ShaderTokenList;
  */
 class ShaderTranslator {
 public:
+	virtual ~ShaderTranslator() {}
 
 	/**
 	 * Enum that handles different types of shader streams.
