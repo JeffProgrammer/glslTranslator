@@ -46,7 +46,7 @@ int main(int argc, const char * argv[]) {
 		delete vertexTranslator;
 
 		// test vertex shader translation from base shader to GLSL 120
-		auto fragmentTranslator = new ShaderTranslatorGL21();;
+		auto fragmentTranslator = new ShaderTranslatorGL21();
 		const auto &translatedFragSource = fragmentTranslator->translate(frag, ShaderTranslator::ShaderType::FRAGMENT);
 		printf("%s\n", translatedFragSource.c_str());
 		delete fragmentTranslator;
