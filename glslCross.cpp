@@ -30,6 +30,7 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
 #include "shaderTranslator.h"
 #include "shaderTranslatorGL21.h"
 #include "shaderTranslatorGL33.h"
@@ -40,32 +41,28 @@ int main(int argc, const char * argv[]) {
 	
 	{
 		// test vertex shader translation from base shader to GLSL 120
-		auto vertexTranslator = new ShaderTranslatorGL21();
+		auto vertexTranslator = std::make_unique<ShaderTranslatorGL21>();
 		const auto &translatedSource = vertexTranslator->translate(vertex, ShaderTranslator::ShaderType::VERTEX);
 		printf("%s\n", translatedSource.c_str());
-		delete vertexTranslator;
 
 		// test vertex shader translation from base shader to GLSL 120
-		auto fragmentTranslator = new ShaderTranslatorGL21();
+		auto fragmentTranslator = std::make_unique<ShaderTranslatorGL21>();
 		const auto &translatedFragSource = fragmentTranslator->translate(frag, ShaderTranslator::ShaderType::FRAGMENT);
 		printf("%s\n", translatedFragSource.c_str());
-		delete fragmentTranslator;
 	}
 
 	printf("\nAnd Now we test OpenGL 3.3 core profile!\n\n");
 
 	{
 		// test vertex shader translation from base shader to GLSL 330 core profile
-		auto vertexTranslator = new ShaderTranslatorGL33();
+		auto vertexTranslator = std::make_unique<ShaderTranslatorGL33>();
 		const auto &translatedSource = vertexTranslator->translate(vertex, ShaderTranslator::ShaderType::VERTEX);
 		printf("%s\n", translatedSource.c_str());
-		delete vertexTranslator;
 
 		// test vertex shader translation from base shader to GLSL 330 core profile
-		auto fragmentTranslator = new ShaderTranslatorGL33();;
+		auto fragmentTranslator = std::make_unique<ShaderTranslatorGL33>();
 		const auto &translatedFragSource = fragmentTranslator->translate(frag, ShaderTranslator::ShaderType::FRAGMENT);
 		printf("%s\n", translatedFragSource.c_str());
-		delete fragmentTranslator;
 	}
 
 #ifdef _WIN32
