@@ -31,6 +31,9 @@
 #include "shaderTranslator.h"
 
 void ShaderTranslator::tokenize(const std::string &str) {
+	// Clear out the tokens.
+	mTokens.clear();
+
 	size_t len = str.length();
 	size_t i = 0;
 	while (i < len) {
