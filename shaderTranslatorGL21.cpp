@@ -32,13 +32,6 @@
 
 const std::string SHADER_GL21_HEADER = "#version 120\n#define GL21\n\n";
 
-/**
-* Translates the shader in it's tokenized list form from the base to GLSL 120.
-* @param str The stream of shader source to be tokenized and translated..
-* @param shaderType The type of shader stream that is being parsed, such as a
-*  vertex shader or a fragment (pixel) shader.
-* @return the translated shader source, back in a string form.
-*/
 const std::string ShaderTranslatorGL21::translate(const std::string &str, ShaderType shaderType) {
 	// We do this just so we can use the token API. I know its silly,
 	// but what if we want to debug it!
