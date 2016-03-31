@@ -27,7 +27,7 @@ Run Cmake and build. A tester program is provided for the library.
 
 Tested on the following tools:
 - Xcode 7.0.1 using Apple LLVM 7.0 C++ compiler (i386 and x86_64)
-- MSVC 2015 32-bit VS140
+- MSVC 2015 32-bit VS140 and VS140_xp
 
 ## License
 
